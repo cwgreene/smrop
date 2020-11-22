@@ -1,12 +1,53 @@
 import subprocess
 import pwn
+import hashlib
+import json
 
+import os
+
+class BinaryDb(object):
+    def __init__(self):
+        db = {}
+        if os.path.exists("BinaryDb.json"):
+            with open("./BinaryDb.json") as binarydb:
+                db = json.load(binarydb)
+        self.db = db
+
+    def checkhash(self, binaryname):
+        with open(binaryname, "rb") as binary:
+            h = hashlib.sha256(binary.read()).hexdigest()
+        return h
+
+    def add(self, binaryname, key, metadata):
+        h = self.checkhash(binaryname)
+        if h not in self.db:
+            self.db[h] = {}
+        self.db[h][key] = metadata
+
+    def check(self, binaryname):
+        h = self.checkhash(binaryname)
+        if h not in self.db:
+            return False
+        return True
+    
+    def get(self, binaryname, key):
+        h = self.checkhash(binaryname)
+        return self.db[h][key]
+
+    def save(self):
+        with open("./BinaryDb.json", "w") as binarydb:
+            binarydb.write(json.dumps(self.db))
+       
 def call_ropgadget(binaryname):
     # a simple pattern match on the binary
     # would probably work fine, but I'm lazy
     # and don't want to deal with edge cases
     # or correctly loading the TEXT section.
     result = {}
+    db = BinaryDb()
+    if db.check(binaryname):
+        return db.get(binaryname, "rops")
+    
     proc = subprocess.run(["ROPgadget", "--binary", binaryname], stdout=subprocess.PIPE)
     stdout = str(proc.stdout, "utf8")
     for line in stdout.split("\n")[2:]:
@@ -16,7 +57,7 @@ def call_ropgadget(binaryname):
         rops = rops.split(" ; ")
         skip = False
         for rop in rops:
-            if not rop.startswith("pop") and not rop.startswith("ret"):
+            if not rop.startswith("pop") and not rop == "ret":
                 skip = True
                 break
         if skip:
@@ -24,6 +65,8 @@ def call_ropgadget(binaryname):
         rop = rops[0]
         if rop not in result:
             result[rop] = (int(addr, 16), len(rops) - 1, rops)
+    db.add(binaryname, "rops", result)
+    db.save()
     return result
 
 def pad(bs, align, pad_byte=b"\x00"):

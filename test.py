@@ -2,8 +2,7 @@ from pwn import *
 import smrop
 
 print("Executing simple")
-#r = process("./test/simple")
-r = gdb.debug("./test/simple")
+r = process("./test/simple")
 
 print("Loading ELF files")
 bin = ELF("./test/simple")
