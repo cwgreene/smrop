@@ -104,5 +104,7 @@ class Smrop():
                 offset = offsets[binary_name]
                 c = pwn.p64(component["value"] + offset)
                 byte_string += c
+        # oops, I think I messed up, I think most of this should all be
+        # part of a payload object which is returend after initializing the Smrop
         self.chain = []
         return byte_string
