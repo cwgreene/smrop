@@ -1,0 +1,4 @@
+build/
+dist/
+smrop.egg-info/
+smrop/__pycache__/

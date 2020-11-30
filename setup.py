@@ -4,7 +4,8 @@ setup(
     name='smrop',
     version='0.1',
     author="Chris Greene",
-    author_email="archgoon@gmail.com",
+    author_email="archgoon+smrop@gmail.com",
     license="MIT",
     packages=['smrop'],
+    install_requires=["pwn", "ROPgadget"]
 )
