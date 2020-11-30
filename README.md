@@ -6,6 +6,12 @@ as well as `angrop` and `ropalyzer`. This tool really
 doesn't bring much more to the table beyond providing
 a specific interface that I want for a different project.
 
+# Installation Instructions
+
+```
+pip install git+git://github.com/cwgreene/smrop.git
+```
+
 # Example Usage
 ```
 from pwn import *
