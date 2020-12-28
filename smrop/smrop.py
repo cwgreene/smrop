@@ -24,9 +24,11 @@ class BinaryDb(object):
             self.db[h] = {}
         self.db[h][key] = metadata
 
-    def check(self, binaryname):
+    def check(self, binaryname, key):
         h = self.checkhash(binaryname)
         if h not in self.db:
+            return False
+        if key not in self.db[h]:
             return False
         return True
     
@@ -45,7 +47,7 @@ def call_ropgadget(binaryname):
     # or correctly loading the TEXT section.
     result = {}
     db = BinaryDb()
-    if db.check(binaryname):
+    if db.check(binaryname, "rops"):
         return db.get(binaryname, "rops")
     
     proc = subprocess.run(["ROPgadget", "--binary", binaryname], stdout=subprocess.PIPE)
