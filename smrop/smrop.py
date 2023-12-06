@@ -96,8 +96,11 @@ class Smrop():
         self.chain.append({"type": "blob", "value": prefix})
         return self
 
-    def pop_rdi(self, value=None, **kwargs):
+    def pop_rdi(self, value=None, target=None, **kwargs):
         (rop_addr, rop_slots, rops), bin_name = self.rop["pop rdi"]
+        if target != None:
+            if bin_name != target:
+                raise Exception("Target does not match! Aborting")
         self.chain.append({"type": "offset", "value": rop_addr, "binary": bin_name})
         if value is not None:
             self.chain.append({"type": "number", "value": value})
