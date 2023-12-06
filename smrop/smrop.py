@@ -108,7 +108,7 @@ class Smrop():
         else:
             raise Exception("Need either value or binary location")
         for i in range(rop_slots - 1):
-            self.chain.append(0)
+            self.chain.append({"type": "number", "value": 0x0})
         return self
 
     def ret(self, symbol_or_addr, bin_name = None):
